@@ -77,6 +77,20 @@
     </rabbit:queue>
 
 <!--#################################################################### 
+	Feed Queue:
+	Expire quotes that sit longer than 30 seconds, as they are of no value
+	#################################################################### -->
+	
+    <rabbit:queue name="nanotrader.feed.queue" >
+	    <rabbit:queue-arguments >
+	    <entry key="x-message-ttl">
+			<value type="java.lang.Long">30000</value>
+		</entry>
+		<entry key="x-ha-policy" value="all" />
+		</rabbit:queue-arguments>
+    </rabbit:queue>
+
+<!--#################################################################### 
 	Exchange and bindings
 	#################################################################### -->
 	
@@ -84,6 +98,7 @@
         <rabbit:bindings>
             <rabbit:binding queue="nanotrader.order.queue" key="nanotrader.order.binding" />
             <rabbit:binding queue="nanotrader.quote.queue" key="nanotrader.quote.binding" />
+            <rabbit:binding queue="nanotrader.feed.queue" key="nanotrader.quote.binding" />
         </rabbit:bindings>
     </rabbit:direct-exchange>
 	</beans>

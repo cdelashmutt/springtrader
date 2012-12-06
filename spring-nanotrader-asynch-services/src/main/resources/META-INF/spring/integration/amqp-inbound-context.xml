@@ -59,6 +59,28 @@
 	
 
 <!--#################################################################### 
+	Feed Processing: Receive updated quote
+	#################################################################### -->
+
+	<int-amqp:inbound-channel-adapter
+		channel="toFeedServiceChannel" message-converter="jsonConverter"
+		queue-names="nanotrader.feed.queue" connection-factory="connectionFactory" />
+	
+	<int:channel id="toFeedServiceChannel">
+		<int:interceptors>
+			<int:wire-tap channel="toGeneralloggingChannel" />
+		</int:interceptors>
+	</int:channel>
+
+	<int:service-activator input-channel="toFeedServiceChannel"
+		output-channel="nullChannel" ref="feedServiceImpl" method="updateQuote">
+		<int:request-handler-advice-chain>
+			<ref bean="retryAdvice" />
+		</int:request-handler-advice-chain>
+	</int:service-activator>
+	
+	
+<!--#################################################################### 
 	Retry Handling: 
 	#################################################################### -->
 	
